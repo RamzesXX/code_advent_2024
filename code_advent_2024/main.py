@@ -9,11 +9,11 @@ from code_advent_2024 import task_runner
 
 _TASK_NUMBER = flags.DEFINE_integer(
     name="task_number",
-    default=None,
+    default=16,
     help="Task number",
     lower_bound=1,
     upper_bound=25,
-    required=True,
+    # required=True,
 )
 
 _PATH_TO_INPUT_FILES = flags.DEFINE_string(

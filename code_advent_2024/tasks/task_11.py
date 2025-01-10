@@ -73,7 +73,6 @@ def _get_stone_frequency(stones: list[int]) -> dict[int, int]:
 
 
 def _calc_number_of_stones_after_blinks(task_input: TaskInput, number_of_blinks: int) -> int:
-    print("Progress:")
     stone_frequency = _get_stone_frequency(task_input.stones)
     for blink_number in range(number_of_blinks):
         task.show_progress(total=number_of_blinks, current=blink_number+1)

@@ -110,7 +110,6 @@ def _find_start_of_free_space(
 
 
 def _defrag_p2(block_map: list[int]) -> list[int]:
-    print("Progress:")
     left = 0
     right = len(block_map) - 1
     length = len(block_map)
