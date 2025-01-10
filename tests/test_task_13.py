@@ -1,6 +1,6 @@
 """Task 13 test cases."""
 import unittest
-from code_advent_2024.tasks import task_15
+from code_advent_2024.tasks import task_13
 
 _INPUT = """
 Button A: X+94, Y+34
@@ -22,24 +22,24 @@ Prize: X=18641, Y=10279
 
 
 class TaskTest(unittest.TestCase):
-    """Test cases for task 11."""
+    """Test cases for task 13."""
 
     def setUp(self):
         super().setUp()
-        self.task_input = task_15.get_input_from_string(_INPUT)
+        self.task_input = task_13.get_input_from_string(_INPUT)
 
     def test_solve_part1(self):
         """Tests solve_part1 method."""
-        actual_value = task_15.solve_part1(self.task_input)
+        actual_value = task_13.solve_part1(self.task_input)
 
-        expected_value = task_15.TaskSolution(number_of_tokens=480)
+        expected_value = task_13.TaskSolution(number_of_tokens=480)
         self.assertEqual(expected_value, actual_value)
 
     def test_solve_part2(self):
         """Tests solve_part2 method."""
-        actual_value = task_15.solve_part2(self.task_input)
+        actual_value = task_13.solve_part2(self.task_input)
 
-        expected_value = task_15.TaskSolution(number_of_tokens=0)
+        expected_value = task_13.TaskSolution(number_of_tokens=875318608908)
         self.assertEqual(expected_value, actual_value)
 
 

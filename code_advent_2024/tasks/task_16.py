@@ -137,7 +137,6 @@ class Traverer:
     def _traverse(self,  reindeer: Reindeer, current_score: int):
         if reindeer.position == self.end_position:
             return
-        if
 
 
 def solve_part1(task_input: TaskInput) -> TaskSolution:
