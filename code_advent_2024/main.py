@@ -9,7 +9,7 @@ from code_advent_2024 import task_runner
 
 _TASK_NUMBER = flags.DEFINE_integer(
     name="task_number",
-    default=17,
+    default=18,
     help="Task number",
     lower_bound=1,
     upper_bound=25,
