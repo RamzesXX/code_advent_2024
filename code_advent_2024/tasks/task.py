@@ -44,7 +44,6 @@ def solve_part2(task_input: TaskInput) -> TaskSolution:
 def show_progress(total: int, current: int):
     "Show progress of the task."
     current_percent = min(100, int(100 * current / total))
-    left_percent = 100 - current_percent
-    progress = f"[{'*'*current_percent}{' '*left_percent}]"
+    progress = f"Progress {current_percent}%"
 
     print(f"\r{progress}", end="")

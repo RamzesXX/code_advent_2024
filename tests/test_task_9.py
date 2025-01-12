@@ -27,7 +27,7 @@ class TaskTest(unittest.TestCase):
         actual_value = task_9.solve_part2(self.task_input)
 
         expected_value = task_9.TaskSolution(
-            filesystem_checksum=2858)
+            filesystem_checksum=3022)
         self.assertEqual(expected_value, actual_value)
 
 

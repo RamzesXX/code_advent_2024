@@ -59,7 +59,6 @@ def get_input_from_string(input_string: str) -> TaskInput:
 def _split_into_figures(
         garden_map: list[list[str]]
 ) -> dict[int, set[Coordinates]]:
-    print("\nProgress:")
     width = len(garden_map[0])
     total_area = len(garden_map) * width
 

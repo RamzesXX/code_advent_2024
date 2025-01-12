@@ -41,24 +41,27 @@ _INPUT_1 = """
 """.strip("\n")
 
 _INPUT_2 = """
-#####
-#..E#
-#.#.#
-#S..#
-#####
+####
+#.E#
+#S.#
+####
 """.strip("\n")
+
 
 _INPUT_3 = """
-###
-#E#
-#S#
-###
-""".strip("\n")
-
-_INPUT_4 = """
 ####
 #SE#
 ####
+""".strip("\n")
+
+_INPUT_4 = """
+#####
+###E#
+#...#
+#.#.#
+#...#
+#S###
+#####
 """.strip("\n")
 
 
@@ -91,7 +94,7 @@ class TaskTest(unittest.TestCase):
 
         actual_value = task_16.solve_part1(self.task_input)
 
-        expected_value = task_16.TaskSolution(score=1004)
+        expected_value = task_16.TaskSolution(score=1002)
         self.assertEqual(expected_value, actual_value)
 
     def test_solve_part1_3(self):
@@ -100,24 +103,32 @@ class TaskTest(unittest.TestCase):
 
         actual_value = task_16.solve_part1(self.task_input)
 
-        expected_value = task_16.TaskSolution(score=1001)
-        self.assertEqual(expected_value, actual_value)
-
-    def test_solve_part1_4(self):
-        """Tests solve_part1 method."""
-        self.task_input = task_16.get_input_from_string(_INPUT_4)
-
-        actual_value = task_16.solve_part1(self.task_input)
-
         expected_value = task_16.TaskSolution(score=1)
         self.assertEqual(expected_value, actual_value)
 
-    @unittest.skip("Not implemented")
     def test_solve_part2(self):
         """Tests solve_part2 method."""
         actual_value = task_16.solve_part2(self.task_input)
 
-        expected_value = task_16.TaskSolution(score=0)
+        expected_value = task_16.TaskSolution(best_path_tiles_number=45)
+        self.assertEqual(expected_value, actual_value)
+
+    def test_solve_part2_1(self):
+        """Tests solve_part2 method."""
+        self.task_input = task_16.get_input_from_string(_INPUT_1)
+
+        actual_value = task_16.solve_part2(self.task_input)
+
+        expected_value = task_16.TaskSolution(best_path_tiles_number=64)
+        self.assertEqual(expected_value, actual_value)
+
+    def test_solve_part2_2(self):
+        """Tests solve_part2 method."""
+        self.task_input = task_16.get_input_from_string(_INPUT_4)
+
+        actual_value = task_16.solve_part2(self.task_input)
+
+        expected_value = task_16.TaskSolution(best_path_tiles_number=10)
         self.assertEqual(expected_value, actual_value)
 
 
