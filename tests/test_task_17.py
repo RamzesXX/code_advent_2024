@@ -44,14 +44,6 @@ class TaskTest(unittest.TestCase):
             program_output="4,2,5,6,7,7,7,7,3,1,0")
         self.assertEqual(expected_value, actual_value)
 
-    @unittest.skip("Not implemented yet")
-    def test_solve_part2(self):
-        """Tests solve_part2 method."""
-        actual_value = task_17.solve_part2(self.task_input)
-
-        expected_value = task_17.TaskSolution(program_output=None)
-        self.assertEqual(expected_value, actual_value)
-
 
 if __name__ == "__main__":
     unittest.main()

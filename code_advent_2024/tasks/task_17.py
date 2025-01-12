@@ -23,6 +23,15 @@ class Istructions(enum.IntEnum):
     CDV = 7
 
 
+_INSTRUCTION_USING_COMBO = (
+    Istructions.ADV,
+    Istructions.BST,
+    Istructions.OUT,
+    Istructions.BDV,
+    Istructions.CDV,
+)
+
+
 @dataclasses.dataclass(frozen=True)
 class TaskInput(task.TaskInput):
     """Represents task input."""
@@ -39,6 +48,22 @@ class TaskSolution(task.TaskSolution):
     register_b: int = 0
     register_c: int = 0
     program_output: str = ""
+
+
+@dataclasses.dataclass(frozen=True)
+class AregOut:
+    """Combination input-output values."""
+    a: int
+    out: int
+
+
+@dataclasses.dataclass(frozen=True)
+class AregShiftOutCreg:
+    """Combination input-output values."""
+    a: int
+    shift: int
+    out: int
+    c: int
 
 
 def get_input_from_file(file_name: str) -> TaskInput:
@@ -85,71 +110,144 @@ def get_input_from_string(input_string: str) -> TaskInput:
     )
 
 
+def _get_value_for_combo_operand(
+    operand: int,
+    register_a: int = 0,
+    register_b: int = 0,
+    register_c: int = 0
+) -> int:
+    if 0 <= operand < 4:
+        return operand
+    if operand == 4:
+        return register_a
+    if operand == 5:
+        return register_b
+    if operand == 6:
+        return register_c
+
+    raise ValueError("Invalid operand")
+
+
+def _run(
+    program: tuple[int, ...],
+    register_a: int = 0,
+    register_b: int = 0,
+    register_c: int = 0
+) -> tuple[list[int], int, int, int]:
+    """Runs program."""
+    ip = 0
+    output = []
+    while ip < len(program):
+        instruction = Istructions(program[ip])
+        operand = program[ip + 1]
+        if instruction in _INSTRUCTION_USING_COMBO:
+            operand_value = _get_value_for_combo_operand(
+                operand=operand,
+                register_a=register_a,
+                register_b=register_b,
+                register_c=register_c
+            )
+        else:
+            operand_value = operand
+
+        ip += 2
+        if instruction == Istructions.ADV:
+            register_a //= 2**operand_value
+        elif instruction == Istructions.BXL:
+            register_b ^= operand_value
+        elif instruction == Istructions.BST:
+            register_b = operand_value % 8
+        elif instruction == Istructions.JNZ:
+            if register_a:
+                ip = operand_value
+        elif instruction == Istructions.BXC:
+            register_b ^= register_c
+        elif instruction == Istructions.OUT:
+            output.append(operand_value % 8)
+        elif instruction == Istructions.BDV:
+            register_b = register_a // 2**operand_value
+        elif instruction == Istructions.CDV:
+            register_c = register_a // 2**operand_value
+        else:
+            raise ValueError("Invalid instruction")
+
+    return output, register_a, register_b, register_c
+
+
 class Computer:
     """Computer."""
 
-    def __init__(self, register_a: int, register_b: int, register_c: int, program: list[int]):
+    def __init__(
+        self,
+        program: tuple[int, ...],
+        register_a: int = 0,
+        register_b: int = 0,
+        register_c: int = 0
+    ):
         self.register_a = register_a
         self.register_b = register_b
         self.register_c = register_c
         self.program = program
         self.output = []
-        self.ip = 0
+        self.register_a_bits = None
 
     def run(self):
         """Runs program."""
-        self.ip = 0
-        self.output = []
-        while self.ip < len(self.program):
-            instruction = Istructions(self.program[self.ip])
-            operand = self.program[self.ip + 1]
-
-            self.ip += 2
-            if instruction == Istructions.ADV:
-                combo_operand_value = self._get_value_for_combo_operand(
-                    operand)
-                self.register_a //= 2**combo_operand_value
-            elif instruction == Istructions.BXL:
-                self.register_b ^= operand
-            elif instruction == Istructions.BST:
-                combo_operand_value = self._get_value_for_combo_operand(
-                    operand)
-                self.register_b = combo_operand_value % 8
-            elif instruction == Istructions.JNZ:
-                if self.register_a:
-                    self.ip = operand
-            elif instruction == Istructions.BXC:
-                self.register_b ^= self.register_c
-            elif instruction == Istructions.OUT:
-                combo_operand_value = self._get_value_for_combo_operand(
-                    operand)
-                self.output.append(combo_operand_value % 8)
-            elif instruction == Istructions.BDV:
-                combo_operand_value = self._get_value_for_combo_operand(
-                    operand)
-                self.register_b = self.register_a // 2**combo_operand_value
-            elif instruction == Istructions.CDV:
-                combo_operand_value = self._get_value_for_combo_operand(
-                    operand)
-                self.register_c = self.register_a // 2**combo_operand_value
-            else:
-                raise ValueError("Invalid instruction")
+        self.output, self.register_a, self.register_b, self.register_c = _run(
+            program=self.program,
+            register_a=self.register_a,
+            register_b=self.register_b,
+            register_c=self.register_c
+        )
 
     def get_output(self) -> str:
         """Returns output."""
         return ",".join([str(x) for x in self.output])
 
-    def _get_value_for_combo_operand(self, operand: int) -> int:
-        if 0 <= operand < 4:
-            return operand
-        if operand == 4:
-            return self.register_a
-        if operand == 5:
-            return self.register_b
-        if operand == 6:
-            return self.register_c
+    def find_correct_register_a(self) -> int:
+        """Find a value which leads to output equal program.
 
-        raise ValueError("Invalid operand")
+        The program looks like:
+            0   b = a % 8
+            1   b = b ^ 1
+            2   c = a // 2**b
+            3   b = b ^ 5
+            4   b = b ^ c
+            5   OUT b % 8
+            6   a = a // 2**3
+            7   JNZ 0
+        """
+        number_of_digits = len(self.program)
+        digit_values = [0 for _ in range(number_of_digits)]
+        prev_values = [0 for _ in range(number_of_digits)]
+        digit_index = 0
+        while digit_index < number_of_digits:
+            prev_value = prev_values[digit_index]
+            matched = False
+            for a in range(digit_values[digit_index], 8):
+                digit_values[digit_index] = a + 1
+                register_a = prev_value * 8 + a
+                output, _, _, _ = _run(
+                    program=self.program,
+                    register_a=register_a,
+                )
+                program_tail = list(self.program[-digit_index - 1:])
+                if output == program_tail:
+                    matched = True
+                    digit_index += 1
+                    if digit_index < number_of_digits:
+                        prev_values[digit_index] = register_a
+                    else:
+                        return register_a
+                    break
+            if not matched:
+                digit_values[digit_index] = 0
+                prev_values[digit_index] = 0
+                if digit_index == 0:
+                    raise ValueError("No solution found")
+                digit_index -= 1
+
+        return 0
 
 
 def solve_part1(task_input: TaskInput) -> TaskSolution:
@@ -172,5 +270,22 @@ def solve_part1(task_input: TaskInput) -> TaskSolution:
 
 def solve_part2(task_input: TaskInput) -> TaskSolution:
     """Solve the second part of the task."""
+    computer = Computer(
+        register_a=task_input.register_a,
+        register_b=task_input.register_b,
+        register_c=task_input.register_c,
+        program=task_input.program,
+    )
+    register_a = computer.find_correct_register_a()
+    computer = Computer(
+        register_a=register_a,
+        register_b=0,
+        register_c=0,
+        program=task_input.program,
+    )
+    computer.run()
 
-    return TaskSolution()
+    return TaskSolution(
+        register_a=register_a,
+        program_output=computer.get_output()
+    )
