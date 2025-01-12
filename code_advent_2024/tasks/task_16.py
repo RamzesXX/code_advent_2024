@@ -53,7 +53,7 @@ class DirectedPosition:
 @dataclasses.dataclass(frozen=True)
 class VisitingDetails:
     """."""
-    score: int | None = None
+    score: int = None
     came_from: tuple[DirectedPosition, ...] = ()
 
 

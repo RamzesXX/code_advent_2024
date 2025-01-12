@@ -105,53 +105,51 @@ class Computer:
             operand = self.program[self.ip + 1]
 
             self.ip += 2
-            match instruction:
-                case Istructions.ADV:
-                    combo_operand_value = self._get_value_for_combo_operand(
-                        operand)
-                    self.register_a //= 2**combo_operand_value
-                case Istructions.BXL:
-                    self.register_b ^= operand
-                case Istructions.BST:
-                    combo_operand_value = self._get_value_for_combo_operand(
-                        operand)
-                    self.register_b = combo_operand_value % 8
-                case Istructions.JNZ:
-                    if self.register_a:
-                        self.ip = operand
-                case Istructions.BXC:
-                    self.register_b ^= self.register_c
-                case Istructions.OUT:
-                    combo_operand_value = self._get_value_for_combo_operand(
-                        operand)
-                    self.output.append(combo_operand_value % 8)
-                case Istructions.BDV:
-                    combo_operand_value = self._get_value_for_combo_operand(
-                        operand)
-                    self.register_b = self.register_a // 2**combo_operand_value
-                case Istructions.CDV:
-                    combo_operand_value = self._get_value_for_combo_operand(
-                        operand)
-                    self.register_c = self.register_a // 2**combo_operand_value
-                case _:
-                    raise ValueError("Invalid instruction")
+            if instruction == Istructions.ADV:
+                combo_operand_value = self._get_value_for_combo_operand(
+                    operand)
+                self.register_a //= 2**combo_operand_value
+            elif instruction == Istructions.BXL:
+                self.register_b ^= operand
+            elif instruction == Istructions.BST:
+                combo_operand_value = self._get_value_for_combo_operand(
+                    operand)
+                self.register_b = combo_operand_value % 8
+            elif instruction == Istructions.JNZ:
+                if self.register_a:
+                    self.ip = operand
+            elif instruction == Istructions.BXC:
+                self.register_b ^= self.register_c
+            elif instruction == Istructions.OUT:
+                combo_operand_value = self._get_value_for_combo_operand(
+                    operand)
+                self.output.append(combo_operand_value % 8)
+            elif instruction == Istructions.BDV:
+                combo_operand_value = self._get_value_for_combo_operand(
+                    operand)
+                self.register_b = self.register_a // 2**combo_operand_value
+            elif instruction == Istructions.CDV:
+                combo_operand_value = self._get_value_for_combo_operand(
+                    operand)
+                self.register_c = self.register_a // 2**combo_operand_value
+            else:
+                raise ValueError("Invalid instruction")
 
     def get_output(self) -> str:
         """Returns output."""
         return ",".join([str(x) for x in self.output])
 
     def _get_value_for_combo_operand(self, operand: int) -> int:
-        match operand:
-            case 4:
-                return self.register_a
-            case 5:
-                return self.register_b
-            case 6:
-                return self.register_c
-            case 7:
-                raise ValueError("Invalid operand")
-            case _:
-                return operand
+        if 0 <= operand < 4:
+            return operand
+        if operand == 4:
+            return self.register_a
+        if operand == 5:
+            return self.register_b
+        if operand == 6:
+            return self.register_c
+
+        raise ValueError("Invalid operand")
 
 
 def solve_part1(task_input: TaskInput) -> TaskSolution:
