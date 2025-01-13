@@ -72,13 +72,12 @@ def find_the_shortes_path(
 ) -> int:
     """."""
     visited_coordinates = {}
-    coord_to_process = [(start, 0)]
+    coord_to_process = [start]
+    visited_coordinates[start] = 0
     while coord_to_process:
-        current_coord, steps = coord_to_process.pop(0)
-        visited_coordinates[current_coord] = steps
-
+        current_coord = coord_to_process.pop(0)
         if current_coord == end:
-            return steps
+            return visited_coordinates[current_coord]
         for direction in _COORD_DELTAS:
             next_coord = Coordinates(
                 current_coord.x + direction.dx,
@@ -89,9 +88,9 @@ def find_the_shortes_path(
                 and 0 <= next_coord.y <= end.y
                 and next_coord not in obstacles
                 and next_coord not in visited_coordinates
-                and ((next_coord, steps + 1) not in coord_to_process)
             ):
-                coord_to_process.append((next_coord, steps + 1))
+                visited_coordinates[next_coord] = visited_coordinates[current_coord] + 1
+                coord_to_process.append(next_coord)
 
     return -1
 
