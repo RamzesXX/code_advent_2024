@@ -27,8 +27,7 @@ class TaskTest(unittest.TestCase):
         """Tests solve_part1 method."""
         actual_value = task_19.solve_part1(self.task_input)
 
-        expected_value = task_19.TaskSolution(
-            program_output="4,6,3,5,6,3,5,2,1,0")
+        expected_value = task_19.TaskSolution(number_of_possible_designs=6)
         self.assertEqual(expected_value, actual_value)
 
     @unittest.skip("Not implemented yet")
@@ -36,7 +35,7 @@ class TaskTest(unittest.TestCase):
         """Tests solve_part2 method."""
         actual_value = task_19.solve_part2(self.task_input)
 
-        expected_value = task_19.TaskSolution(program_output=None)
+        expected_value = task_19.TaskSolution(number_of_possible_designs=0)
         self.assertEqual(expected_value, actual_value)
 
 
