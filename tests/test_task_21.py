@@ -3,15 +3,11 @@ import unittest
 from code_advent_2024.tasks import task_21
 
 _INPUT = """
-+---+---+---+
-| 7 | 8 | 9 |
-+---+---+---+
-| 4 | 5 | 6 |
-+---+---+---+
-| 1 | 2 | 3 |
-+---+---+---+
-    | 0 | A |
-    +---+---+
+029A
+980A
+179A
+456A
+379A
 """.strip("\n")
 
 
@@ -26,8 +22,7 @@ class TaskTest(unittest.TestCase):
         """Tests solve_part1 method."""
         actual_value = task_21.solve_part1(self.task_input)
 
-        expected_value = task_21.TaskSolution(
-            program_output="4,6,3,5,6,3,5,2,1,0")
+        expected_value = task_21.TaskSolution(sum_of_complexities=126384)
         self.assertEqual(expected_value, actual_value)
 
     @unittest.skip("Not implemented yet")
@@ -35,7 +30,7 @@ class TaskTest(unittest.TestCase):
         """Tests solve_part2 method."""
         actual_value = task_21.solve_part2(self.task_input)
 
-        expected_value = task_21.TaskSolution(program_output=None)
+        expected_value = task_21.TaskSolution(sum_of_complexities=0)
         self.assertEqual(expected_value, actual_value)
 
 
