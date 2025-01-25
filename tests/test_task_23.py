@@ -39,7 +39,7 @@ td-yn
 
 
 class TaskTest(unittest.TestCase):
-    """Test cases for task 17."""
+    """Test cases for task 23."""
 
     def setUp(self):
         super().setUp()
@@ -50,15 +50,14 @@ class TaskTest(unittest.TestCase):
         actual_value = task_23.solve_part1(self.task_input)
 
         expected_value = task_23.TaskSolution(
-            program_output="4,6,3,5,6,3,5,2,1,0")
+            number_of_three_interconnected_pcs=7)
         self.assertEqual(expected_value, actual_value)
 
-    @unittest.skip("Not implemented yet")
     def test_solve_part2(self):
         """Tests solve_part2 method."""
         actual_value = task_23.solve_part2(self.task_input)
 
-        expected_value = task_23.TaskSolution(program_output=None)
+        expected_value = task_23.TaskSolution(password="co,de,ka,ta")
         self.assertEqual(expected_value, actual_value)
 
 
