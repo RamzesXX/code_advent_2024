@@ -46,7 +46,7 @@ _INPUT = """
 
 
 class TaskTest(unittest.TestCase):
-    """Test cases for task 17."""
+    """Test cases for task 25."""
 
     def setUp(self):
         super().setUp()
@@ -57,7 +57,7 @@ class TaskTest(unittest.TestCase):
         actual_value = task_25.solve_part1(self.task_input)
 
         expected_value = task_25.TaskSolution(
-            program_output="4,6,3,5,6,3,5,2,1,0")
+            number_of_matching_key_lock_pairs=3)
         self.assertEqual(expected_value, actual_value)
 
     @unittest.skip("Not implemented yet")
@@ -65,7 +65,8 @@ class TaskTest(unittest.TestCase):
         """Tests solve_part2 method."""
         actual_value = task_25.solve_part2(self.task_input)
 
-        expected_value = task_25.TaskSolution(program_output=None)
+        expected_value = task_25.TaskSolution(
+            number_of_matching_key_lock_pairs=None)
         self.assertEqual(expected_value, actual_value)
 
 
