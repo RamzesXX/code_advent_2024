@@ -1,18 +1,23 @@
-"""""Task 17 solver."""
+"""""Task 22 solver.
+Tip: don't do all 2000 iterations once find the cycle we can just
+calculate index of the value.
+"""
 import dataclasses
-import enum
 from code_advent_2024.tasks import task
+
+_NUMBER_OF_ITERATIONS = 2000
 
 
 @dataclasses.dataclass(frozen=True)
 class TaskInput(task.TaskInput):
     """Represents task input."""
+    origin_secret_numbers: tuple[int] = ()
 
 
 @dataclasses.dataclass(frozen=True, )
 class TaskSolution(task.TaskSolution):
     """Represents task solution."""
-    program_output: str = ""
+    sum_of_generated_secret_numbers: int = 0
 
 
 def get_input_from_file(file_name: str) -> TaskInput:
@@ -33,34 +38,66 @@ def get_input_from_string(input_string: str) -> TaskInput:
     Args:
         input_string: Input data as a string.
     """
+    secret_numbers = tuple(int(x) for x in input_string.split())
 
-    # maze_map = {}
-    # start_postion = None
-    # end_postion = None
-    # reindeer = None
-    # for row_idx,  line in enumerate(input_string.split("\n")):
-    #     for col_idx, char in enumerate(line):
-    #         if char == _WALL_CHAR:
-    #             maze_map[Position(row=row_idx, col=col_idx)] = _WALL_CHAR
-    #         elif char == _START_POSITION_CHAR:
-    #             start_postion = Position(row=row_idx, col=col_idx)
-    #             reindeer = DirectedPosition(
-    #                 position=start_postion,
-    #                 direction=Direction.EAST
-    #             )
-    #         elif char == _END_POSITION_CHAR:
-    #             end_postion = Position(row=row_idx, col=col_idx)
+    return TaskInput(origin_secret_numbers=secret_numbers)
 
-    return TaskInput()
+
+def _prune(secret_number: int) -> int:
+    return secret_number % 16777216
+
+
+def _mix(secret_number: int, number) -> int:
+
+    return secret_number ^ number
+
+
+def calc_next_secret_number(secret_number: int) -> int:
+    """Calculate next secret number."""
+    secret_number = _prune(_mix(secret_number, secret_number << 6))
+    secret_number = _prune(_mix(secret_number, secret_number >> 5))
+    secret_number = _prune(_mix(secret_number, secret_number << 11))
+
+    return secret_number
+
+
+def get_secret_number_after_iterations(
+    origin_secret_number: int,
+    number_of_iterations: int
+) -> int:
+    """Get secret number after performed iterations."""
+    number_of_iteration = 0
+    secret_numbers = []
+    secret_number = origin_secret_number
+    while (
+        number_of_iteration < number_of_iterations
+        and secret_number not in secret_numbers
+    ):
+        secret_numbers.append(secret_number)
+        secret_number = calc_next_secret_number(secret_number)
+        number_of_iteration += 1
+
+    if number_of_iteration == number_of_iterations:
+        return secret_number
+
+    index = number_of_iterations % number_of_iteration
+    return secret_numbers[index]
 
 
 def solve_part1(task_input: TaskInput) -> TaskSolution:
     "Solve the first part of the task."
+    sum_of_generated_secret_numbers = sum(
+        get_secret_number_after_iterations(
+            origin_secret_number=secret_number,
+            number_of_iterations=_NUMBER_OF_ITERATIONS
+        )
+        for secret_number in task_input.origin_secret_numbers
+    )
 
-    return TaskSolution(program_output="")
+    return TaskSolution(sum_of_generated_secret_numbers=sum_of_generated_secret_numbers)
 
 
 def solve_part2(task_input: TaskInput) -> TaskSolution:
     """Solve the second part of the task."""
 
-    return TaskSolution(program_output="")
+    return TaskSolution(sum_of_generated_secret_numbers=0)
